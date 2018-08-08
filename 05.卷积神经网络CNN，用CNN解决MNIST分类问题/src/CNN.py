@@ -6,7 +6,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
 # 每个批次的大小
-batch_size = 100
+batch_size = 50
 # 计算一共有多少个批次
 n_batch = mnist.train.num_examples // batch_size
 
@@ -45,8 +45,8 @@ y = tf.placeholder(tf.float32, [None, 10])
 x_image = tf.reshape(x, [-1, 28, 28, 1])
 
 # 初始化第一个卷积层的权值和偏置
-W_conv1 = weight_variable([5, 5, 1, 32], name='W_conv1') # 5*5的采样窗口，32个卷积核从1个平面抽取特征
-b_conv1 = bias_variable([32], name='b_conv1')  # 每一个卷积核一个偏置值
+W_conv1 = weight_variable([5, 5, 1, 16], name='W_conv1') # 5*5的采样窗口，32个卷积核从1个平面抽取特征
+b_conv1 = bias_variable([16], name='b_conv1')  # 每一个卷积核一个偏置值
 
 # 把x_image和权值向量进行卷积，再加上偏置值，然后应用于relu激活函数
 conv2d_1 = conv2d(x_image, W_conv1) + b_conv1
@@ -54,8 +54,8 @@ h_conv1 = tf.nn.relu(conv2d_1)
 h_pool1 = max_pool_2x2(h_conv1)  # 进行max-pooling
 
 # 初始化第二个卷积层的权值和偏置
-W_conv2 = weight_variable([5, 5, 32, 64], name='W_conv2')  # 5*5的采样窗口，64个卷积核从32个平面抽取特征
-b_conv2 = bias_variable([64], name='b_conv2')  # 每一个卷积核一个偏置值
+W_conv2 = weight_variable([5, 5, 16, 32], name='W_conv2')  # 5*5的采样窗口，64个卷积核从32个平面抽取特征
+b_conv2 = bias_variable([32], name='b_conv2')  # 每一个卷积核一个偏置值
 
 # 把h_pool1和权值向量进行卷积，再加上偏置值，然后应用于relu激活函数
 conv2d_2 = conv2d(h_pool1, W_conv2) + b_conv2
@@ -67,11 +67,11 @@ h_pool2 = max_pool_2x2(h_conv2)  # 进行max-pooling
 # 进过上面操作后得到64张7*7的平面
 
 # 初始化第一个全连接层的权值
-W_fc1 = weight_variable([7 * 7 * 64, 1024], name='W_fc1')  # 上一场有7*7*64个神经元，全连接层有1024个神经元
+W_fc1 = weight_variable([7 * 7 * 32, 1024], name='W_fc1')  # 上一场有7*7*64个神经元，全连接层有1024个神经元
 b_fc1 = bias_variable([1024], name='b_fc1')  # 1024个节点
 
 # 把池化层2的输出扁平化为1维
-h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
+h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 32])
 # 求第一个全连接层的输出
 wx_plus_b1 = tf.matmul(h_pool2_flat, W_fc1) + b_fc1
 h_fc1 = tf.nn.relu(wx_plus_b1)
